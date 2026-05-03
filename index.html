@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Boulevard - Carta para Mi Amor</title>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Great+Vibes&family=Poppins:wght@300;400;600&display=swap');
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+
+    body{
+      font-family: 'Poppins', sans-serif;
+      background: radial-gradient(circle at top, #0c0f1a, #05060b);
+      color: white;
+      min-height: 100vh;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      padding: 25px;
+    }
+
+    .container{
+      width: 100%;
+      max-width: 900px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap: 18px;
+    }
+
+    /* Caja del video */
+    .music-box{
+      width: 100%;
+      border-radius: 18px;
+      overflow:hidden;
+      border: 2px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(10px);
+      box-shadow: 0px 0px 25px rgba(255, 0, 100, 0.08);
+    }
+
+    .music-box iframe{
+      width: 100%;
+      height: 250px;
+      border: none;
+    }
+
+    /* Libro */
+    .book{
+      width: 100%;
+      min-height: 540px;
+      border-radius: 22px;
+      background: rgba(255,255,255,0.04);
+      border: 2px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(14px);
+      box-shadow: 0px 0px 50px rgba(255, 0, 120, 0.09);
+      overflow:hidden;
+      position: relative;
+    }
+
+    /* Portada */
+    .cover{
+      width: 100%;
+      height: 100%;
+      padding: 60px 30px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      text-align:center;
+      gap: 20px;
+      background: linear-gradient(135deg, rgba(255,0,100,0.15), rgba(0,0,0,0.7));
+    }
+
+    .cover h1{
+      font-family: 'Great Vibes', cursive;
+      font-size: 70px;
+      color: #ffb6d5;
+      text-shadow: 0px 0px 25px rgba(255, 0, 100, 0.4);
+    }
+
+    .cover h2{
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      color: rgba(255,255,255,0.95);
+      letter-spacing: 1px;
+    }
+
+    .cover p{
+      max-width: 650px;
+      font-size: 16px;
+      color: rgba(255,255,255,0.8);
+      line-height: 1.8;
+    }
+
+    .cover .hint{
+      margin-top: 25px;
+      font-size: 15px;
+      color: rgba(255,255,255,0.75);
+      padding: 12px 18px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(0,0,0,0.25);
+    }
+
+    /* Paginas */
+    .page{
+      display:none;
+      padding: 45px 40px;
+      animation: fadeIn 0.6s ease;
+    }
+
+    .page.active{
+      display:block;
+    }
+
+    .page-title{
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      color: rgba(255,255,255,0.75);
+      margin-bottom: 12px;
+    }
+
+    .page-content{
+      font-size: 16px;
+      line-height: 1.9;
+      color: rgba(255,255,255,0.9);
+      white-space: pre-line;
+    }
+
+    .final-phrase{
+      margin-top: 25px;
+      padding: 20px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.04);
+      font-size: 18px;
+      text-align:center;
+      font-family: 'Playfair Display', serif;
+      color: #ffd1e6;
+      text-shadow: 0px 0px 18px rgba(255,0,100,0.3);
+    }
+
+    /* Botones */
+    .controls{
+      display:flex;
+      justify-content:space-between;
+      width: 100%;
+      max-width: 900px;
+      gap: 15px;
+      margin-top: 8px;
+    }
+
+    button{
+      flex: 1;
+      padding: 14px 18px;
+      border-radius: 18px;
+      border: none;
+      cursor:pointer;
+      font-size: 16px;
+      font-weight: 600;
+      transition: 0.3s ease;
+      color: white;
+      background: linear-gradient(135deg, rgba(255,0,100,0.65), rgba(130,0,255,0.55));
+      box-shadow: 0px 0px 20px rgba(255, 0, 140, 0.18);
+    }
+
+    button:hover{
+      transform: scale(1.02);
+      box-shadow: 0px 0px 30px rgba(255, 0, 140, 0.35);
+    }
+
+    button:disabled{
+      opacity: 0.35;
+      cursor:not-allowed;
+      transform: none;
+      box-shadow:none;
+    }
+
+    /* Numero pagina */
+    .page-number{
+      position:absolute;
+      bottom: 12px;
+      right: 20px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.55);
+    }
+
+    @keyframes fadeIn{
+      from{opacity:0; transform: translateY(12px);}
+      to{opacity:1; transform: translateY(0);}
+    }
+
+    @media(max-width: 600px){
+      .cover h1{font-size: 55px;}
+      .page{padding: 35px 22px;}
+      .music-box iframe{height: 210px;}
+    }
+
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- Caja del video -->
+  <div class="music-box">
+    <iframe id="musicFrame"
+      src="https://www.youtube.com/embed/6hzrDeceEKc"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen>
+    </iframe>
+  </div>
+
+  <!-- Libro -->
+  <div class="book">
+
+    <!-- Portada -->
+    <div class="page active" id="page0">
+      <div class="cover">
+        <h1>Boulevard</h1>
+        <h2>Una carta para el amor de mi vida</h2>
+        <p>
+          Esta no es una carta normal…  
+          es un libro hecho para ti.  
+          Porque tú no mereces una historia recortada,  
+          tú mereces una historia completa…  
+          como el amor que siento por ti.
+        </p>
+
+        <div class="hint">📖 Presiona “Siguiente” para comenzar…</div>
+      </div>
+    </div>
+
+    <!-- Página 1 -->
+    <div class="page" id="page1">
+      <div class="page-title">Página 1</div>
+      <div class="page-content">
+Sábado, 2 de mayo de 2026 — Noche
+
+Mi amor,
+
+Esta noche me siento diferente… como si el aire tuviera otro peso, como si el silencio estuviera lleno de pensamientos que llevan tu nombre, como si todo el universo me estuviera empujando a escribirte, porque mi corazón no sabe quedarse quieto cuando se trata de ti.
+
+Y aquí estoy… pensando en nosotros, en lo que vivimos, en lo que sentimos, en lo que somos… y también en algo que sé que te marcó mucho: Boulevard.
+
+Porque ayer, cuando vimos la adaptación, yo te miraba a ti más que a la pantalla. Te veía con esa mirada tuya tan real, tan intensa… esa mirada que se nota cuando algo te importa de verdad. Y yo entendí perfectamente tu molestia, tu tristeza, esa rabia bonita que nace cuando te tocan una historia que amas.
+
+Porque Boulevard no es cualquier historia para ti.
+
+Boulevard no es solo un libro…
+Boulevard es un mundo.
+Es un sentimiento.
+Es una herida.
+Es una llama.
+Es una historia que no se olvida.
+
+Y ayer, cuando vi tu cara al notar que cambiaron cosas importantes, que quitaron partes que para ti eran esenciales, yo no pensé “es solo una película”… yo pensé: “le están quitando el alma a algo que ella ama.”
+
+Y eso me dolió… porque yo sé que tú no amas las cosas a medias. Tú amas con intensidad, con emoción, con el corazón completo. Igual que cuando amas un libro, una canción… o una persona.
+
+Igual que cuando me amas a mí.
+      </div>
+    </div>
+
+    <!-- Página 2 -->
+    <div class="page" id="page2">
+      <div class="page-title">Página 2</div>
+      <div class="page-content">
+Mi amor…
+
+Hoy quiero que esta carta sea como tu Boulevard.
+No el Boulevard incompleto que intentaron resumir.
+No el Boulevard recortado y modificado para hacerlo “más comercial”.
+
+Yo quiero darte el Boulevard verdadero… el que vive en tu pecho.
+Ese Boulevard lleno de sentimientos crudos, de amor que quema, de frases que se quedan para siempre en la mente, de escenas que duelen, de miradas que pesan más que mil palabras.
+
+Porque Boulevard no es bonito por ser perfecto…
+Boulevard es inolvidable porque es real en su dolor.
+
+Y tú… tú eres igual.
+
+Tú no eres un amor superficial, tú eres un amor que se siente en la piel, en la mente y en el alma. Tú eres ese tipo de amor que cuando llega, cambia la vida entera.
+
+Y yo lo sé… porque desde que llegaste a mi vida, yo no volví a ser el mismo.
+
+Mi amor…
+
+Ayer, mientras veíamos esa adaptación, yo pensaba:
+¿Cómo pueden quitar lo importante?
+¿Cómo pueden borrar escenas que eran el corazón de la historia?
+¿Cómo pueden cambiar detalles que construían todo lo que hacía a Boulevard tan único?
+
+Y después me di cuenta de algo…
+
+Hay cosas que no se pueden adaptar.
+
+Porque Boulevard no es solo una secuencia de eventos…
+Boulevard es una tormenta emocional.
+Es esa sensación de amar a alguien incluso cuando sabes que puede destruirte.
+Es esa mezcla de deseo, miedo, dependencia y cariño.
+Es un amor que duele… pero que aun así uno quiere.
+
+Y eso no se puede explicar con escenas rápidas.
+
+Eso solo se entiende cuando lo lees, cuando lo sientes, cuando te rompe por dentro… como a ti te rompió.
+      </div>
+    </div>
+
+    <!-- Página 3 -->
+    <div class="page" id="page3">
+      <div class="page-title">Página 3</div>
+      <div class="page-content">
+Mi amor…
+
+Tú merecías ver en la pantalla lo que tanto amaste en las páginas. Merecías que respetaran cada momento importante, cada escena que te hizo llorar, cada parte que te dejó sin aire. Merecías que no lo cambiaran, que no lo “suavizaran”, que no lo volvieran otra historia cualquiera.
+
+Porque Boulevard nunca fue una historia cualquiera.
+
+Boulevard es de esas historias que se quedan dentro… y aunque pase el tiempo, aunque cierres el libro, aunque intentes olvidarlo, siempre vuelve.
+
+Como tú vuelves a mí en mis pensamientos.
+
+Como tú vuelves a mí incluso cuando no estás cerca.
+
+Mi amor…
+
+Si Boulevard fuera una calle, yo creo que sería esa calle donde uno camina sin saber si al final va a encontrar felicidad o dolor… pero igual camina, porque hay amores que valen el riesgo.
+
+Y tú… tú eres ese riesgo que yo tomaría mil veces.
+
+Porque tú eres esa clase de amor que no se encuentra dos veces en la vida.
+
+A veces pienso que lo que tú sentiste leyendo Boulevard es parecido a lo que yo siento cuando te miro.
+
+Porque yo también siento cosas que me desordenan.
+Yo también siento una intensidad que me quema por dentro.
+Yo también siento que mi corazón no sabe ser tranquilo contigo.
+
+Y tú, mi amor… eres como esas partes del libro que nadie olvida.
+
+Eres esa escena que te deja temblando.
+Eres esa frase que te persigue.
+Eres ese momento que se queda marcado en el alma.
+
+Y sí… lo confieso…
+
+Yo también odio la idea de que cambien lo que importa.
+
+Porque así como cambiaron Boulevard, el mundo muchas veces intenta cambiar el amor, intenta hacerlo más frío, más simple, más fácil de olvidar…
+
+Pero lo nuestro no es así.
+
+Lo nuestro es como Boulevard:
+intenso, inevitable, apasionado… imposible de ignorar.
+
+Solo que contigo yo no quiero un final triste.
+
+Yo quiero que nuestra historia sea la versión que nadie se atreve a escribir:
+la versión donde el amor no se rompe,
+donde la vida no se lleva lo que uno ama,
+donde el destino no gana,
+donde el dolor no es el final…
+y donde tú y yo sí nos quedamos.
+      </div>
+    </div>
+
+    <!-- Página 4 -->
+    <div class="page" id="page4">
+      <div class="page-title">Página 4</div>
+      <div class="page-content">
+Mi amor…
+
+Ayer te vi enojada, decepcionada… y aun así tan hermosa. Porque incluso cuando te molestas, incluso cuando estás triste, incluso cuando sientes que te dañaron algo que amabas… tú sigues siendo la mujer más preciosa que he visto en mi vida.
+
+Y yo solo pensaba:
+
+“Dios… qué afortunado soy de tenerla.”
+
+Porque tú no solo eres bonita por fuera…
+tú eres hermosa por dentro.
+
+Eres intensa.
+Eres sentimental.
+Eres real.
+Eres de las pocas personas que sienten de verdad.
+
+Y eso es algo que vale oro.
+
+Mi amor…
+
+Si Boulevard nos enseñó algo, es que el amor puede ser peligroso, puede ser adictivo, puede ser una herida abierta…
+
+Pero también nos enseñó que cuando uno ama con el alma, ese amor deja marca para siempre.
+
+Y tú en mí dejaste una marca eterna.
+
+Desde que llegaste, ya no soy el mismo.
+Desde que te conocí, ya no puedo imaginar un futuro sin ti.
+Desde que te amo, todo lo demás se siente vacío.
+
+Y lo que siento por ti no es un amor suave…
+
+Es un amor que me domina.
+Un amor que me desarma.
+Un amor que me acelera el corazón.
+Un amor que me vuelve loco cuando te pienso.
+
+Mi amor…
+
+A veces quisiera tener el talento de Flor M. Salvador para escribirte algo que te deje sin respiración, algo que te haga llorar bonito, algo que te haga sentir que estás dentro de una historia…
+
+Pero después recuerdo que yo no necesito escribir como ella para amarte como nadie.
+
+Porque mi amor por ti no es ficción.
+Mi amor por ti es real.
+
+Y eso lo hace más fuerte que cualquier libro.
+
+Ayer te decepcionó la película porque quitaron escenas importantes… y yo te entiendo, mi vida, porque hay detalles que son el alma de una historia.
+
+Y quiero que tú sepas algo:
+
+Yo jamás quitaría los detalles importantes de ti.
+
+Yo jamás te amaría a medias.
+Jamás te elegiría solo cuando es fácil.
+Jamás te dejaría sola en los capítulos difíciles.
+
+Yo quiero cada parte de ti.
+
+Quiero tus risas.
+Quiero tus enojos.
+Quiero tus lágrimas.
+Quiero tus sueños.
+Quiero tus miedos.
+Quiero tus días buenos.
+Quiero tus días malos.
+Quiero tu corazón entero… sin recortes, sin cambios, sin versiones incompletas.
+
+Porque tú no eres un resumen.
+Tú eres una historia completa.
+
+Y yo quiero leerte toda la vida.
+
+Mi amor…
+
+Hay algo que me encanta de ti… y es que tú no te conformas con cualquier cosa. Tú sabes cuando algo es verdadero y cuando algo es falso. Tú sabes cuando una historia tiene alma y cuando solo está hecha para verse bonita.
+
+Y por eso tú eres diferente.
+
+Porque tú eres profunda.
+Tú eres intensa.
+Tú eres de esas personas que aman con fuerza… como se ama en Boulevard.
+
+Y yo… yo quiero ser el amor que te haga sentir segura.
+
+Quiero ser el amor que no te falle.
+Quiero ser el amor que no te cambie la historia.
+Quiero ser el amor que no te decepcione.
+
+Porque si la vida es un libro, mi amor…
+
+yo quiero que tú seas mi capítulo favorito.
+Y no solo un capítulo…
+
+Quiero que seas el final.
+
+Pero no un final triste.
+
+Quiero que nuestro final sea de esos que hacen llorar… pero de felicidad.
+
+De esos que te dejan con el corazón lleno.
+De esos que te hacen creer en el amor otra vez.
+De esos que no necesitan drama para ser inolvidables.
+
+Mi amor…
+
+No sabes cuánto me gusta verte apasionada por las cosas que amas. No sabes lo bonito que se ve tu carita cuando hablas de Boulevard, cuando recuerdas escenas, cuando dices “eso no era así”, cuando defiendes lo que te hizo sentir tanto.
+
+Y mientras tú hablabas, yo solo pensaba:
+
+“Así ama ella… así de fuerte… así de real.”
+
+Y yo te juro que me dan ganas de abrazarte tan fuerte que se te olvide cualquier decepción.
+
+Porque yo quiero que tú siempre tengas lo que mereces:
+
+Una historia completa.
+Un amor verdadero.
+Un hombre que no te cambie el guion.
+
+Un hombre que te ame como tú amas.
+
+Y ese hombre quiero ser yo.
+
+Mi amor…
+
+Esta noche, mientras escribo, imagino que estamos juntos, que te tengo cerquita, que te abrazo por la cintura, que beso tu frente despacito y te digo al oído:
+
+“No importa lo que hicieron con Boulevard… porque lo que tú sientes por esa historia nadie te lo puede quitar.”
+
+Y luego te diría algo más…
+
+“Yo voy a darte una historia mejor.”
+
+Una historia donde tú no tengas que sufrir por amor.
+Una historia donde tú no tengas que llorar por alguien que no sabe cuidarte.
+Una historia donde tú seas la protagonista… y yo sea el hombre que te ama con devoción.
+
+Porque mi amor…
+
+yo no quiero amarte como un personaje que se va.
+
+Yo quiero amarte como un hombre que se queda.
+
+Quiero ser ese amor que no se rinde.
+Ese amor que no huye.
+Ese amor que no te deja sola.
+
+Ese amor que te mira y siente que encontró el universo entero en una sola persona.
+
+Y esa persona eres tú.
+
+Tú eres mi universo.
+
+Mi amor…
+
+Hoy quiero que lo recuerdes:
+si Boulevard te hizo sentir tanto, es porque tu corazón es inmenso.
+Y si tu corazón es inmenso… entonces yo tengo la responsabilidad más grande del mundo: cuidarlo.
+
+Porque tu amor no es un juego.
+Tu amor no es pasajero.
+Tu amor no es de mentira.
+
+Tu amor es real… y por eso vale más que cualquier historia escrita.
+
+Y yo quiero ser digno de ese amor.
+
+Así que esta noche, sábado 2 de mayo… quiero decirte algo con el alma desnuda:
+
+Te amo con una intensidad que no se puede explicar.
+
+Te amo como se ama lo que se teme perder.
+Te amo como se ama lo que se vuelve adicción.
+Te amo como se ama lo que te salva y te destruye al mismo tiempo… pero sin destruirte a ti, porque tú eres lo más sagrado que tengo.
+
+Te amo como se ama en Boulevard…
+pero yo sí quiero que lo nuestro tenga un final hermoso.
+
+Y si algún día la vida intenta cambiarnos la historia, como hicieron con la película… yo voy a pelear por nuestro libro original.
+
+El verdadero.
+El completo.
+El que tiene todos los detalles importantes.
+
+El que tiene tus risas.
+Tus besos.
+Tus caricias.
+Tus miradas.
+Tus abrazos.
+Tus “te amo” en voz bajita.
+Tus celos bonitos.
+Tus momentos de ternura.
+Tu manera de mirarme como si yo fuera tu lugar seguro.
+
+Mi amor…
+
+Tú eres mi historia favorita.
+Y yo quiero escribir contigo el amor más grande que exista.
+
+No un amor de película recortada.
+No un amor rápido.
+No un amor incompleto.
+
+Quiero un amor como tú mereces:
+intenso, fiel, apasionado y eterno.
+
+Y te lo juro…
+
+Si el mundo me diera mil destinos… yo siempre elegiría el mismo:
+amarte a ti, hasta que el último latido de mi corazón susurre tu nombre.
+
+Porque tú…
+
+tú eres mi Boulevard.
+La calle donde mi vida cambió.
+El lugar donde mi alma se enamoró para siempre.
+El amor que no quiero perder jamás.
+
+Con todo lo que soy, con toda mi pasión y con todo mi corazón…
+
+Te amo.
+Te amo demasiado.
+Te amo como si fueras mi destino.
+Te amo como si fueras mi final.
+Te amo como si fueras la única historia que vale la pena vivir.
+
+Siempre tuyo,
+con un amor que no se apaga…
+y con un corazón que solo te pertenece a ti. ❤️🔥📖
+
+      </div>
+
+      <!-- Frase final editable -->
+      <div class="final-phrase">
+        ✨ <strong>al final mi vida aunque no lo demostrará preciosa yo te entiendo que no te gustara por que se que tenías bonitas espectativas  y me gustaría poder cambiarlo a tu gusto pero lastimosamente no puedo mi niña y es cierto hermosa lo realmente hermoso solo ocurre una vez</strong> ✨
+      </div>
+    </div>
+
+    <div class="page-number" id="pageNumber">Portada</div>
+  </div>
+
+  <!-- Botones -->
+  <div class="controls">
+    <button id="prevBtn" disabled>⬅ Anterior</button>
+    <button id="nextBtn">Siguiente ➡</button>
+  </div>
+
+</div>
+
+<script>
+  let currentPage = 0;
+  const totalPages = 4;
+
+  // LINKS de música por página (incluye portada en la posición 0)
+  const musicLinks = [
+    "https://www.youtube.com/embed/6hzrDeceEKc", // Portada
+    "https://www.youtube.com/embed/RcCKSD0mhvE", // Página 1
+    "https://www.youtube.com/embed/1K14AjNZXrU", // Página 2
+    "https://www.youtube.com/embed/rr53wxxO2P0", // Página 3
+    "https://www.youtube.com/embed/6hzrDeceEKc"  // Página 4
+  ];
+
+  const musicFrame = document.getElementById("musicFrame");
+  const pageNumber = document.getElementById("pageNumber");
+
+  const prevBtn = document.getElementById("prevBtn");
+  const nextBtn = document.getElementById("nextBtn");
+
+  function showPage(page){
+    // ocultar todas
+    for(let i=0; i<=totalPages; i++){
+      document.getElementById("page"+i).classList.remove("active");
+    }
+
+    // mostrar actual
+    document.getElementById("page"+page).classList.add("active");
+
+    // cambiar musica
+    musicFrame.src = musicLinks[page];
+
+    // numero de pagina
+    if(page === 0){
+      pageNumber.innerText = "Portada";
+    }else{
+      pageNumber.innerText = "Página " + page + " de " + totalPages;
+    }
+
+    // controlar botones
+    prevBtn.disabled = page === 0;
+    nextBtn.disabled = page === totalPages;
+  }
+
+  prevBtn.addEventListener("click", ()=>{
+    if(currentPage > 0){
+      currentPage--;
+      showPage(currentPage);
+    }
+  });
+
+  nextBtn.addEventListener("click", ()=>{
+    if(currentPage < totalPages){
+      currentPage++;
+      showPage(currentPage);
+    }
+  });
+
+  showPage(currentPage);
+</script>
+
+</body>
+            </html>
